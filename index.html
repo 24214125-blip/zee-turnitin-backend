@@ -6,11 +6,6 @@
 <title>Zee Turnitin — Cepat, Akurat & Terpercaya</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- LIBRARY PEMBACA FILE DOCX & PDF LANGSUNG DI BROWSER -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-
 <style>
   :root{
     --sky:#AFDCF5; --sky-deep:#7FC4EA; --white:#FFFFFF; --cream:#FDF6EC;
@@ -39,8 +34,7 @@
   .btn-submit {width:100%;background:var(--navy);color:#fff;border:none;padding:15px;border-radius:30px;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-top:15px;}
   .screen {display:none;} .screen.active {display:block;}
   .qris-image {width:220px;height:220px;object-fit:contain;margin:15px auto;border:4px solid var(--navy);border-radius:12px;display:block;}
-  .status-lock {background:#FFF3E0;color:#E65100;padding:12px;border-radius:12px;font-size:13px;font-weight:700;margin-top:15px;text-align:center;border:1px dashed #FFB74D;}
-  .status-success {background:var(--green-light);color:var(--green);padding:12px;border-radius:12px;font-size:13px;font-weight:700;margin-top:15px;text-align:center;border:1px dashed var(--green);display:none;}
+  .info-payment {background:var(--green-light);color:var(--green);padding:12px;border-radius:12px;font-size:13px;font-weight:600;margin-top:15px;text-align:center;border:1px dashed var(--green);}
   .loading-text {color:var(--gold); font-size:13px; font-weight:bold; display:none; margin-top:5px;}
 </style>
 </head>
@@ -53,10 +47,10 @@
 <section class="hero">
   <div class="wrap">
     
-    <!-- SCREEN 1: FORM -->
+    <!-- SCREEN 1: FORM UTAMA -->
     <div id="screen-form" class="screen active hero-collage">
       <h1>Check Turnitin Manual ✨</h1>
-      <p style="margin-bottom:20px;">Silakan isi formulir dan pilih filter setelan Turnitin di bawah ini.</p>
+      <p style="margin-bottom:20px;">Silakan isi formulir dan upload berkas skripsi/jurnal kamu.</p>
       
       <div class="main-form-card">
         <div class="form-group">
@@ -70,13 +64,10 @@
         <div class="form-group">
           <label>Upload File Tugas (Word / PDF / Teks)</label>
           <div class="dropzone" id="dropzoneBox">
-            <!-- SEKARANG BISA TERIMA DOC, DOCX, PDF, DAN TXT -->
             <input type="file" id="fileInput" accept=".docx,.doc,.pdf,.txt" style="display:none;" />
             <div id="fileNameDisplay" style="font-weight:600;">Drop file (.docx, .pdf, .txt) di sini</div>
-            <div style="font-size:12px; color:#666; margin-top:4px;">atau klik area ini untuk memilih berkas skripsi</div>
-            <div id="loadingExtract" class="loading-text">⏳ Memproses ekstraksi teks file...</div>
+            <div style="font-size:12px; color:#666; margin-top:4px;">atau klik area ini untuk memilih berkas</div>
           </div>
-          <small style="display:block;color:#666;font-size:11px;margin-top:5px;">*Untuk Google Docs (GDoc), silakan download dulu ke format .docx atau .pdf lalu upload di sini ya!</small>
         </div>
         <div class="form-group">
           <label>Request Filters Setelan Turnitin (Opsional)</label>
@@ -88,31 +79,27 @@
           <div style="margin-top:12px;">
             <label style="font-size:13.5px;font-weight:500;color:var(--navy);">Exclude Small Matches (Words):</label>
             <input type="number" id="matchWords" value="8" min="8" style="width:80px; padding:5px; margin-left:10px; border-radius:6px; border:1px solid var(--line);" />
-            <small style="display:block;color:var(--red);font-size:11px;margin-top:3px;">*Minimal batas pengecekan adalah 8 kata.</small>
           </div>
         </div>
         <div class="price-badge-box">
-          <div>Total Biaya Layanan</div>
           <div class="price-amount" id="calculatedPrice">Rp 7.000</div>
         </div>
         <button class="btn-submit" id="btnGoToPay">Lanjut ke Pembayaran 💳</button>
       </div>
     </div>
 
-    <!-- SCREEN 2: QRIS -->
+    <!-- SCREEN 2: HALAMAN QRIS -->
     <div id="screen-pay" class="screen hero-collage">
       <h1>Selesaikan Pembayaran 🌟</h1>
       <div class="main-form-card" style="text-align:center;">
         <img src="gbr_qris.jpeg" alt="QRIS" class="qris-image" onerror="this.src='gbr_qris.jpg';">
-        <div class="price-badge-box" style="background:var(--cream);">
+        <div class="price-badge-box">
           <div class="price-amount" id="finalPayAmount">Rp 7.000</div>
         </div>
-
-        <div id="lockMessage" class="status-lock">🔒 BUTTON WA TERKUNCI<br>Silakan transfer lalu klik tombol konfirmasi di bawah.</div>
-        <div id="successMessage" class="status-success">✅ PEMBAYARAN BERHASIL VALID!<br>Silakan REFRESH halaman ini jika diperlukan, lalu klik tombol WA di bawah untuk kirim file!</div>
-
-        <button class="btn-submit" id="btnConfirmPay" style="background:var(--gold);">Saya Sudah Transfer & Bayar 💸</button>
-        <button class="btn-submit" id="btnSendWA" style="background:#888; cursor:not-allowed;" disabled>Kirim Orderan ke WhatsApp Admin 🚀</button>
+        <div class="info-payment">💡 <b>Langkah Terakhir:</b><br>Silakan scan & transfer. Jika sudah, klik tombol di bawah untuk langsung mengirim nota & nama berkas asli ke WA Admin!</div>
+        <div id="loadingUpload" class="loading-text">⏳ Memproses kiriman data ke cloud Render... Mohon tunggu jangan ditutup!</div>
+        
+        <button class="btn-submit" id="btnSendWA" style="background:var(--green);">Kirim Orderan ke WhatsApp Admin 🚀</button>
       </div>
     </div>
 
@@ -120,19 +107,12 @@
 </section>
 
 <script>
-  // Konfigurasi Awal PDF Worker
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
   const fileInput = document.getElementById('fileInput');
   const dropzoneBox = document.getElementById('dropzoneBox');
   const fileNameDisplay = document.getElementById('fileNameDisplay');
   const pagesInput = document.getElementById('pages');
   const matchWordsInput = document.getElementById('matchWords');
-  const loadingExtract = document.getElementById('loadingExtract');
-  
   let selectedFile = null;
-  let extractedText = ""; 
-  let isPaid = false;
 
   function hitungTarif() {
     let jmlLembar = parseInt(pagesInput.value) || 1;
@@ -143,135 +123,59 @@
     document.getElementById('finalPayAmount').innerText = "Rp " + baseHarga.toLocaleString('id-ID');
   }
   pagesInput.addEventListener('input', hitungTarif);
-  
-  matchWordsInput.addEventListener('change', () => {
-    if(parseInt(matchWordsInput.value) < 8) { alert("Minimal Match Words adalah 8!"); matchWordsInput.value = 8; }
-  });
 
   dropzoneBox.addEventListener('click', () => fileInput.click());
-
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropzoneBox.addEventListener(eventName, (e) => { e.preventDefault(); dropzoneBox.classList.add('dragover'); }, false);
-  });
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropzoneBox.addEventListener(eventName, (e) => { e.preventDefault(); dropzoneBox.classList.remove('dragover'); }, false);
-  });
-  
-  dropzoneBox.addEventListener('drop', (e) => {
-    if(e.dataTransfer.files.length > 0) handleFileSelection(e.dataTransfer.files[0]);
-  });
   fileInput.addEventListener('change', (e) => {
-    if(e.target.files.length > 0) handleFileSelection(e.target.files[0]);
-  });
-
-  // FUNGSI SAKTI EKSTRAKSI ISI TEXT DARI BERBAGAI FORMAT FILE
-  function handleFileSelection(file) {
-    selectedFile = file;
-    fileNameDisplay.innerText = "📄 " + file.name;
-    loadingExtract.style.display = "block";
-    extractedText = "";
-
-    const fileReader = new FileReader();
-
-    // JIKA FILE ADALAH WORD (.DOCX)
-    if (file.name.endsWith('.docx')) {
-      fileReader.onload = function(event) {
-        let arrayBuffer = event.target.result;
-        mammoth.extractRawText({arrayBuffer: arrayBuffer})
-          .then(function(result) {
-            extractedText = result.value;
-            loadingExtract.style.display = "none";
-          })
-          .catch(function(err) { alert("Gagal mengekstrak file Word!"); loadingExtract.style.display = "none"; });
-      };
-      fileReader.readAsArrayBuffer(file);
-
-    // JIKA FILE ADALAH PDF (.PDF)
-    } else if (file.name.endsWith('.pdf')) {
-      fileReader.onload = function(event) {
-        let typedarray = new Uint8Array(event.target.result);
-        pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
-          let layers = [];
-          for (let i = 1; i <= pdf.numPages; i++) {
-            layers.push(pdf.getPage(i).then(function(page) {
-              return page.getTextContent().then(function(content) {
-                return content.items.map(item => item.str).join(" ");
-              });
-            }));
-          }
-          Promise.all(layers).then(function(texts) {
-            extractedText = texts.join("\n\n");
-            loadingExtract.style.display = "none";
-          });
-        }).catch(() => { alert("Gagal mengekstrak PDF!"); loadingExtract.style.display = "none"; });
-      };
-      fileReader.readAsArrayBuffer(file);
-
-    // JIKA FILE ADALAH TEKS LOKAL (.TXT)
-    } else if (file.name.endsWith('.txt')) {
-      fileReader.onload = function(event) {
-        extractedText = event.target.result;
-        loadingExtract.style.display = "none";
-      };
-      fileReader.readAsText(file);
-    } else {
-      alert("Format berkas tidak didukung! Tolong masukkan .docx, .pdf, atau .txt, bos!");
-      loadingExtract.style.display = "none";
-      selectedFile = null;
-      fileNameDisplay.innerText = "Drop file (.docx, .pdf, .txt) di sini";
+    if(e.target.files.length > 0) { 
+      selectedFile = e.target.files[0]; 
+      fileNameDisplay.innerText = "📄 " + selectedFile.name; 
     }
-  }
+  });
 
   document.getElementById('btnGoToPay').addEventListener('click', () => {
-    if(!document.getElementById('whatsapp').value.trim()) { alert("Isi nomor WhatsApp kamu dulu!"); return; }
-    if(!selectedFile) { alert("Upload file tugas kamu dulu, bos!"); return; }
+    if(!document.getElementById('whatsapp').value.trim()) { alert("Isi nomor WhatsApp dulu!"); return; }
+    if(!selectedFile) { alert("Upload file berkas skripsi dulu, bos!"); return; }
     document.getElementById('screen-form').classList.remove('active');
     document.getElementById('screen-pay').classList.add('active');
   });
 
-  document.getElementById('btnConfirmPay').addEventListener('click', () => {
-    alert("Sistem mendeteksi mutasi... Pembayaran Berhasil! Silakan klik OK dan ikuti instruksi.");
-    isPaid = true;
-    document.getElementById('lockMessage').style.display = 'none';
-    document.getElementById('successMessage').style.display = 'block';
-    
-    const waBtn = document.getElementById('btnSendWA');
-    waBtn.disabled = false;
-    waBtn.style.background = 'var(--green)';
-    waBtn.style.cursor = 'pointer';
-    document.getElementById('btnConfirmPay').style.display = 'none';
-  });
-
   document.getElementById('btnSendWA').addEventListener('click', async () => {
-    if(!isPaid) { alert("Pembayaran belum divalidasi!"); return; }
-    
-    // Potong teks esai jika kepanjangan agar tidak merusak URL WhatsApp API (Max batas chat aman)
-    let textToSend = extractedText;
-    if (textToSend.length > 5000) {
-      textToSend = textToSend.substring(0, 5000) + "\n\n...(Teks dipotong sistem karena terlalu panjang, minta berkas asli ke customer jika perlu)...";
-    }
+    const loadingText = document.getElementById('loadingUpload');
+    const btn = document.getElementById('btnSendWA');
+    loadingText.style.display = "block";
+    btn.disabled = true;
+    btn.style.background = "#888";
+
+    // Mengirim file fisik asli menggunakan format FormData
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('whatsapp', document.getElementById('whatsapp').value.trim());
+    formData.append('pages', pagesInput.value);
+    formData.append('total_price', document.getElementById('finalPayAmount').innerText);
+    formData.append('excludeBib', document.getElementById('excludeBib').checked ? "Aktif" : "Mati");
+    formData.append('excludeQuotes', document.getElementById('excludeQuotes').checked ? "Aktif" : "Mati");
+    formData.append('excludeCited', document.getElementById('excludeCited').checked ? "Aktif" : "Mati");
+    formData.append('matchWords', matchWordsInput.value);
 
     try {
       const response = await fetch('https://zee-turnitin-backend.onrender.com/api/order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          whatsapp: document.getElementById('whatsapp').value.trim(),
-          pages: document.getElementById('pages').value,
-          total_price: document.getElementById('finalPayAmount').innerText,
-          filters: {
-            excludeBib: document.getElementById('excludeBib').checked ? "Aktif" : "Mati",
-            excludeQuotes: document.getElementById('excludeQuotes').checked ? "Aktif" : "Mati",
-            excludeCited: document.getElementById('excludeCited').checked ? "Aktif" : "Mati",
-            matchWords: matchWordsInput.value
-          },
-          text_content: textToSend
-        })
+        body: formData
       });
+      
       const resData = await response.json();
-      if(resData.status === 'success') window.open(resData.whatsapp_url, '_blank');
+      loadingText.style.display = "none";
+      
+      if(resData.status === 'success' && resData.whatsapp_url) {
+        window.open(resData.whatsapp_url, '_blank');
+      } else {
+        alert("Gagal memproses orderan dari respons server: " + resData.message);
+        btn.disabled = false; btn.style.background = "var(--green)";
+      }
     } catch (err) {
-      alert("Eror menyambung ke server Render!");
+      loadingText.style.display = "none";
+      alert("Eror menyambung ke server Render backend! Pastikan server Render Anda aktif.");
+      btn.disabled = false; btn.style.background = "var(--green)";
     }
   });
 </script>
