@@ -19,14 +19,14 @@
   header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
   nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;max-width:1160px;margin:0 auto;}
   .logo{display:flex;align-items:center;gap:9px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;color:var(--navy);}
-  .logo-blob{width:34px;height:34px;border-radius:60% 40% 55% 45%/50% 55% 45% 50%;background:linear-gradient(135deg,var(--sky),var(--sky-deep));display:flex;align-items:center;justify-content:center;}
   .hero{padding:40px 0 60px;}
   .hero-collage{max-width:900px;margin:0 auto;text-align:center;padding:20px;}
   .main-form-card {background:var(--white);border:1px solid var(--line);border-radius:30px;box-shadow:0 20px 40px -15px rgba(43,58,85,.1);max-width:520px;margin:0 auto;padding:32px;text-align:left;}
   .form-group {margin-bottom:20px;}
   .form-group label {display:block;font-family:'Fredoka',sans-serif;font-size:15px;color:var(--navy);margin-bottom:8px;}
   .form-group input[type="text"], .form-group input[type="number"] {width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);font-size:14.5px;}
-  .dropzone{background:var(--cream);border:2.5px dashed var(--sky-deep);border-radius:20px;padding:25px 20px;cursor:pointer;text-align:center;}
+  .dropzone{background:var(--cream);border:2.5px dashed var(--sky-deep);border-radius:20px;padding:25px 20px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .dropzone.dragover {background:#E3F2FD; border-color:var(--navy);}
   .filter-grid {display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
   .checkbox-label {display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500;cursor:pointer;}
   .price-badge-box {background:var(--lavender);padding:15px;border-radius:15px;margin-top:15px;text-align:center;}
@@ -41,7 +41,7 @@
 <body>
 
 <header>
-  <nav><div class="logo"><div class="logo-blob">⚡</div>Zee Turnitin</div></nav>
+  <nav><div class="logo">⚡ Zee Turnitin</div></nav>
 </header>
 
 <section class="hero">
@@ -63,9 +63,10 @@
         </div>
         <div class="form-group">
           <label>Upload File Esai/Jurnal (.txt)</label>
-          <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+          <div class="dropzone" id="dropzoneBox">
             <input type="file" id="fileInput" accept=".txt" style="display:none;" />
             <div id="fileNameDisplay" style="font-weight:600;">Drop file esai (.txt) di sini</div>
+            <div style="font-size:12px; color:#666; margin-top:4px;">atau klik area ini untuk memilih berkas</div>
           </div>
         </div>
         <div class="form-group">
@@ -93,7 +94,7 @@
     <div id="screen-pay" class="screen hero-collage">
       <h1>Selesaikan Pembayaran 🌟</h1>
       <div class="main-form-card" style="text-align:center;">
-        <img src="gbr_qris.jpeg" alt="QRIS" class="qris-image">
+        <img src="gbr_qris.jpeg" alt="QRIS" class="qris-image" onerror="this.src='gbr_qris.jpg';">
         <div class="price-badge-box" style="background:var(--cream);">
           <div class="price-amount" id="finalPayAmount">Rp 7.000</div>
         </div>
@@ -112,12 +113,14 @@
 
 <script>
   const fileInput = document.getElementById('fileInput');
+  const dropzoneBox = document.getElementById('dropzoneBox');
   const fileNameDisplay = document.getElementById('fileNameDisplay');
   const pagesInput = document.getElementById('pages');
   const matchWordsInput = document.getElementById('matchWords');
   let selectedFile = null;
   let isPaid = false;
 
+  // Fungsi Hitung Tarif
   function hitungTarif() {
     let jmlLembar = parseInt(pagesInput.value) || 1;
     let baseHarga = 7000;
@@ -132,9 +135,35 @@
     if(parseInt(matchWordsInput.value) < 8) { alert("Minimal Match Words adalah 8, tidak bisa kurang!"); matchWordsInput.value = 8; }
   });
 
-  fileInput.addEventListener('change', (e) => {
-    if(e.target.files.length > 0) { selectedFile = e.target.files[0]; fileNameDisplay.innerText = selectedFile.name; }
+  // Efek Klik Pada Area Kotak Upload
+  dropzoneBox.addEventListener('click', () => fileInput.click());
+
+  // Efek Drag & Drop Berkas
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzoneBox.addEventListener(eventName, (e) => { e.preventDefault(); dropzoneBox.classList.add('dragover'); }, false);
   });
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzoneBox.addEventListener(eventName, (e) => { e.preventDefault(); dropzoneBox.classList.remove('dragover'); }, false);
+  });
+  dropzoneBox.addEventListener('drop', (e) => {
+    if(e.dataTransfer.files.length > 0) {
+      handleFileSelection(e.dataTransfer.files[0]);
+    }
+  });
+  fileInput.addEventListener('change', (e) => {
+    if(e.target.files.length > 0) {
+      handleFileSelection(e.target.files[0]);
+    }
+  });
+
+  function handleFileSelection(file) {
+    if (file.name.endsWith('.txt')) {
+      selectedFile = file;
+      fileNameDisplay.innerText = "📄 " + file.name;
+    } else {
+      alert("Maaf bos, hanya menerima file format teks (.txt)!");
+    }
+  }
 
   document.getElementById('btnGoToPay').addEventListener('click', () => {
     if(!document.getElementById('whatsapp').value.trim()) { alert("Isi nomor WhatsApp kamu dulu!"); return; }
@@ -143,14 +172,12 @@
     document.getElementById('screen-pay').classList.add('active');
   });
 
-  // Simulasi Validasi Bayar Sesuai Request Lu
   document.getElementById('btnConfirmPay').addEventListener('click', () => {
     alert("Sistem mendeteksi mutasi... Pembayaran Berhasil! Silakan klik OK dan ikuti instruksi.");
     isPaid = true;
     document.getElementById('lockMessage').style.display = 'none';
     document.getElementById('successMessage').style.display = 'block';
     
-    // Buka Kunci Tombol WA
     const waBtn = document.getElementById('btnSendWA');
     waBtn.disabled = false;
     waBtn.style.background = 'var(--green)';
