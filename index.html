@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zee Turnitin — Cepat, Akurat & Terpercaya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#AFDCF5;
+    --sky-deep:#7FC4EA;
+    --white:#FFFFFF;
+    --cream:#FDF6EC;
+    --lavender:#EFE9F8;
+    --gold:#D9A94E;
+    --gold-soft:#F1D9A8;
+    --navy:#2B3A55;
+    --charcoal:#4A5468;
+    --pink-blush:#FBD9DE;
+    --line:#E4EEF6;
+    --green:#2E7D32;
+    --green-light:#E8F5E9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--white);
+    color:var(--charcoal);
+    font-family:'Quicksand',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1160px;margin:0 auto;padding:0 32px;}
+  h1,h2,h3{font-family:'Fredoka',sans-serif;color:var(--navy);line-height:1.08;}
+  
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;max-width:1160px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;color:var(--navy);}
+  .logo-blob{
+    width:34px;height:34px;border-radius:60% 40% 55% 45%/50% 55% 45% 50%;
+    background:linear-gradient(135deg,var(--sky),var(--sky-deep));
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .logo-blob svg{width:18px;height:18px;}
+
+  .hero{padding:40px 0 60px;position:relative;}
+  .hero-collage{max-width:900px;margin:0 auto;text-align:center;padding:20px;}
+  .eyebrow-tape{
+    display:inline-block;padding:8px 22px;margin-bottom:20px;
+    background:var(--lavender);border-radius:3px;font-family:'Fredoka',sans-serif;
+    font-size:13px;font-weight:600;color:var(--navy);transform:rotate(-1.5deg);
+  }
+  .hero h1 { font-size:clamp(32px,5vw,46px); margin-bottom:15px; }
+  .hero p.sub { font-size:16.5px; max-width:500px; margin:0 auto 30px; line-height:1.5; }
+
+  .main-form-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    box-shadow: 0 20px 40px -15px rgba(43,58,85,.1);
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 32px;
+    text-align: left;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block; font-family: 'Fredoka', sans-serif;
+    font-size: 15px; color: var(--navy); margin-bottom: 8px;
+  }
+  .form-group input[type="text"], .form-group input[type="number"] {
+    width: 100%; padding: 12px 16px; border-radius: 12px;
+    border: 2px solid var(--line); font-family: inherit; font-size: 14.5px;
+  }
+  .form-group input:focus { border-color: var(--sky-deep); outline: none; }
+
+  .dropzone{
+    background:var(--cream); border:2.5px dashed var(--sky-deep); border-radius:20px;
+    padding:25px 20px; cursor:pointer; text-align:center; transition: all .2s;
+  }
+  .dropzone:hover{ border-color:var(--gold); background:#FFFBF2; }
+  .clip-icon{ width:40px; height:40px; margin:0 auto 10px; display:block; }
+  .dz-title{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; color:var(--navy); }
+  .dz-sub{ font-size:12px; color:var(--charcoal); }
+
+  .filter-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;
+  }
+  .checkbox-label {
+    display: flex; align-items: center; gap: 8px; font-size: 13.5px;
+    font-weight: 500; cursor: pointer; color: var(--charcoal);
+  }
+  .checkbox-label input { width: 16px; height: 16px; accent-color: var(--gold); }
+  
+  .price-badge-box {
+    background: var(--lavender); padding: 15px; border-radius: 15px;
+    margin-top: 15px; text-align: center;
+  }
+  .price-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--charcoal); }
+  .price-amount { font-family: 'Fredoka', sans-serif; font-size: 28px; color: var(--navy); font-weight: 700; margin-top: 2px; }
+
+  .btn-submit {
+    width: 100%; background: var(--navy); color: #fff; border: none;
+    padding: 15px; border-radius: 30px; font-family: 'Fredoka', sans-serif;
+    font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 15px;
+    transition: background .2s, transform .2s;
+  }
+  .btn-submit:hover { background: var(--gold); transform: translateY(-2px); }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Tampilan Rincian QRIS */
+  .qris-container { text-align: center; }
+  .qris-image {
+    width: 220px; height: 220px; object-fit: contain; margin: 15px auto;
+    border: 4px solid var(--navy); border-radius: 12px; display: block;
+  }
+  .info-alert {
+    background: var(--green-light); color: var(--green); padding: 12px;
+    border-radius: 12px; font-size: 13px; font-weight: 600; text-align: left; margin-top: 15px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <div class="logo-blob">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 12c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg>
+      </div>
+      Zee Turnitin
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    
+    <!-- SCREEN 1: INPUT PESANAN -->
+    <div id="screen-form" class="screen active hero-collage">
+      <span class="eyebrow-tape">⚡ Cepat, Valid, & Murah Meriah</span>
+      <h1>Check Turnitin Manual<br><span style="color:var(--gold);">Gak Pake Ribet</span> ✨</h1>
+      <p class="sub">Isi formulir, dapatkan kalkulasi harga transparan, lakukan pembayaran QRIS instan, dan laporkan langsung ke admin.</p>
+      
+      <div class="main-form-card">
+        <div class="form-group">
+          <label for="whatsapp">Nomor WhatsApp Kamu</label>
+          <input type="text" id="whatsapp" placeholder="Contoh: 08123456789" required />
+        </div>
+
+        <div class="form-group">
+          <label for="pages">Jumlah Lembar/Halaman Dokumen</label>
+          <input type="number" id="pages" value="1" min="1" required />
+        </div>
+
+        <div class="form-group">
+          <label>Upload File Esai/Jurnal (.txt)</label>
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" accept=".txt" style="display:none;" />
+            <div class="dz-title" id="fileNameDisplay">Drop file esai (.txt) di sini</div>
+            <div class="dz-sub">atau klik untuk menelusuri berkas</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Request Filters Setelan Turnitin</label>
+          <div class="filter-grid">
+            <label class="checkbox-label"><input type="checkbox" id="excludeBib" checked> Exclude Bib</label>
+            <label class="checkbox-label"><input type="checkbox" id="excludeQuotes" checked> Exclude Quotes</label>
+            <label class="checkbox-label"><input type="checkbox" id="excludeMethods"> Exclude Methods</label>
+          </div>
+        </div>
+
+        <div class="price-badge-box">
+          <div class="price-title">Total Biaya Layanan</div>
+          <div class="price-amount" id="calculatedPrice">Rp 7.000</div>
+        </div>
+
+        <button class="btn-submit" id="btnGoToPay">Lanjut ke Pembayaran 💳</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: HALAMAN PEMBAYARAN QRIS -->
+    <div id="screen-pay" class="screen hero-collage">
+      <h1>Selesaikan Pembayaran 🌟</h1>
+      <p class="sub">Silakan scan QRIS di bawah ini untuk nominal yang tertera demi memproses orderan kamu.</p>
+      
+      <div class="main-form-card qris-container">
+        <h3 style="text-align:center;">QRIS ZEE TURNITIN</h3>
+        
+        <!-- 🔥 SUPORT JPEG / JPG SEKALIGUS -->
+        <img src="gbr_qris.jpg" alt="QRIS" class="qris-image" onerror="this.src='gbr_qris.jpg'; this.onerror=function(){ this.style.display='none'; document.getElementById('qris-placeholder').style.display='flex'; };">
+        
+        <div id="qris-placeholder" class="qris-image" style="display:none; background:#f0f0f0; color:#555; align-items:center; justify-content:center; font-weight:bold;">[ FOTO QRIS LU DI SINI ]</div>
+
+        <div class="price-badge-box" style="background: var(--cream);">
+          <div class="price-title" style="color:var(--navy);">NOMINAL TRANSFER</div>
+          <div class="price-amount" id="finalPayAmount" style="color:var(--gold);">Rp 7.000</div>
+        </div>
+
+        <div class="info-alert">
+          💡 <b>Info Penting:</b> Setelah klik tombol di bawah, rincian order beserta file esai kamu akan otomatis dikirimkan ke WhatsApp Owner. Pastikan kamu kirim screenshot bukti bayar juga ya!
+        </div>
+
+        <button class="btn-submit" style="background:var(--green);" id="btnSendWA">Kirim Orderan ke WhatsApp Admin 🚀</button>
+        <button class="btn-submit" style="background:#888; margin-top:8px;" onclick="window.location.reload()">Kembali / Batal</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const dropzone = document.getElementById('dropzone');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
+  const pagesInput = document.getElementById('pages');
+  const calculatedPriceText = document.getElementById('calculatedPrice');
+  const finalPayAmountText = document.getElementById('finalPayAmount');
+  
+  let selectedFile = null;
+
+  function hitungTarif() {
+    let jmlLembar = parseInt(pagesInput.value) || 1;
+    let baseHarga = 7000;
+    
+    if (jmlLembar > 200) {
+      baseHarga += 2000;
+    } else if (jmlLembar > 100) {
+      baseHarga += 1000;
+    }
+    
+    calculatedPriceText.innerText = "Rp " + baseHarga.toLocaleString('id-ID');
+    finalPayAmountText.innerText = "Rp " + baseHarga.toLocaleString('id-ID');
+    return baseHarga;
+  }
+
+  pagesInput.addEventListener('input', hitungTarif);
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
+    dropzone.addEventListener(ev, (e) => e.preventDefault(), false);
+  });
+  dropzone.addEventListener('drop', (e) => {
+    if(e.dataTransfer.files.length > 0) {
+      selectedFile = e.dataTransfer.files[0];
+      fileNameDisplay.innerText = selectedFile.name;
+    }
+  });
+  fileInput.addEventListener('change', (e) => {
+    if(e.target.files.length > 0) {
+      selectedFile = e.target.files[0];
+      fileNameDisplay.innerText = selectedFile.name;
+    }
+  });
+
+  document.getElementById('btnGoToPay').addEventListener('click', () => {
+    const wa = document.getElementById('whatsapp').value.trim();
+    if(!wa) { alert("Isi nomor WhatsApp kamu dulu, bos!"); return; }
+    if(!selectedFile) { alert("Silakan cantumkan berkas .txt kamu terlebih dahulu!"); return; }
+    
+    document.getElementById('screen-form').classList.remove('active');
+    document.getElementById('screen-pay').classList.add('active');
+  });
+
+  document.getElementById('btnSendWA').addEventListener('click', async () => {
+    const waNumber = document.getElementById('whatsapp').value.trim();
+    const jmlLembar = document.getElementById('pages').value;
+    const filters = {
+      excludeBib: document.getElementById('excludeBib').checked ? "Aktif" : "Mati",
+      excludeQuotes: document.getElementById('excludeQuotes').checked ? "Aktif" : "Mati",
+      excludeMethods: document.getElementById('excludeMethods').checked ? "Aktif" : "Mati"
+    };
+
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+      const isiTeksEsai = evt.target.result;
+
+      try {
+        const response = await fetch('http://127.0.0.1:8080/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            whatsapp: waNumber,
+            pages: jmlLembar,
+            filters: filters,
+            text_content: isiTeksEsai,
+            total_price: finalPayAmountText.innerText
+          })
+        });
+
+        const resData = await response.json();
+        if(resData.status === 'success') {
+          window.open(resData.whatsapp_url, '_blank');
+        } else {
+          alert("Gagal memproses link pesan: " + resData.message);
+        }
+      } catch (err) {
+        alert("Gagal terhubung ke backend Python lu! Pastiin terminal VS Code menyala!");
+      }
+    };
+    reader.readAsText(selectedFile);
+  });
+</script>
+</body>
+</html>
