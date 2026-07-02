@@ -1,41 +1,60 @@
+import os
 import urllib.parse
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
-NOMOR_WA_OWNER = "6285928102713" 
+NOMOR_WA_OWNER = "6285928102713"
+UPLOAD_FOLDER = '/tmp' # Folder aman sementara di cloud Render
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/api/order', methods=['POST'])
-def process_manual_order():
+def process_file_order():
     try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'status': 'error', 'message': 'Data kosong'}), 400
-        
-        wa_cust = data.get('whatsapp', '')
-        jml_lembar = data.get('pages', '1')
-        total_harga = data.get('total_price', 'Rp 7.000')
-        filters = data.get('filters', {})
-        isi_esai = data.get('text_content', '')
+        # Cek apakah ada file yang diupload oleh customer
+        if 'file' not in request.files:
+            return jsonify({'status': 'error', 'message': 'File berkas tidak ditemukan'}), 400
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'status': 'error', 'message': 'Nama file kosong'}), 400
 
-        # Format pesan WA rapi dengan melampirkan teks esai utuh di bawahnya
+        # Ambil data form lainnya
+        wa_cust = request.form.get('whatsapp', '')
+        jml_lembar = request.form.get('pages', '1')
+        total_harga = request.form.get('total_price', 'Rp 7.000')
+        ex_bib = request.form.get('excludeBib', 'Mati')
+        ex_quotes = request.form.get('excludeQuotes', 'Mati')
+        ex_cited = request.form.get('excludeCited', 'Mati')
+        m_words = request.form.get('matchWords', '8')
+
+        # Simpan file secara aman di server Render
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+        # LINK UNDUHAN (Sementara memanfaatkan nama file asli agar tersimpan di sistem data)
+        # Catatan: Karena ini di server Render free, link ini berlaku internal. 
+        # Customer akan membawa nama file asli yang valid di dalam chat WA Anda!
+        
         template_chat = (
-            f"🛒 *ZEE TURNITIN — DATA PESANAN BARU* 🛒\n\n"
+            f"🛒 *ZEE TURNITIN — PESANAN MASUK ULA* 🛒\n\n"
             f"📱 *Data Customer:*\n"
             f"   - No. WA Cust: {wa_cust}\n"
             f"   - Jumlah Lembar: {jml_lembar} Halaman\n\n"
-            f"🛠️ *Request Settings Filter Turnitin:*\n"
-            f"   - Exclude Bibliography: {filters.get('excludeBib', 'Mati')}\n"
-            f"   - Exclude Quoted: {filters.get('excludeQuotes', 'Mati')}\n"
-            f"   - Exclude Cited: {filters.get('excludeCited', 'Mati')}\n"
-            f"   - Exclude Small Matches: {filters.get('matchWords', '8')} Words\n\n"
-            f"💰 *Status Pembayaran:* *LUNAS ({total_harga})*\n\n"
+            f"📋 *Nama File Berkas Anda:*\n"
+            f"   👉 _{filename}_\n\n"
+            f"🛠️ *Setelan Filter Turnitin:*\n"
+            f"   - Exclude Bibliography: {ex_bib}\n"
+            f"   - Exclude Quoted: {ex_quotes}\n"
+            f"   - Exclude Cited: {ex_cited}\n"
+            f"   - Exclude Small Matches: {m_words} Words\n\n"
+            f"💰 *Total Bayar:* *LUNAS ({total_harga})*\n\n"
             f"===============================\n"
-            f"📝 *ISI FILE ESAI UTUH CUSTOMER (SIAP COPY-PASTE):*\n"
-            f"===============================\n\n"
-            f"{isi_esai}"
+            f"Hai Admin Zee Turnitin, saya sudah transfer. Mohon diproses file skripsi saya di atas ya! Terima kasih! 🙏✨"
         )
 
         teks_encoded = urllib.parse.quote(template_chat)
