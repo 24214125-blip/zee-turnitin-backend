@@ -32,6 +32,7 @@
   .price-badge-box {background:var(--lavender);padding:15px;border-radius:15px;margin-top:15px;text-align:center;}
   .price-amount {font-family:'Fredoka',sans-serif;font-size:28px;color:var(--navy);font-weight:700;}
   .btn-submit {width:100%;background:var(--navy);color:#fff;border:none;padding:15px;border-radius:30px;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin-top:15px;}
+  .btn-submit:disabled {background:#ccc; cursor:not-allowed;}
   .screen {display:none;} .screen.active {display:block;}
   .qris-image {width:220px;height:220px;object-fit:contain;margin:15px auto;border:4px solid var(--navy);border-radius:12px;display:block;}
   .info-payment {background:var(--green-light);color:var(--green);padding:12px;border-radius:12px;font-size:13px;font-weight:600;margin-top:15px;text-align:center;border:1px dashed var(--green);}
@@ -92,12 +93,13 @@
       <div class="main-form-card" style="text-align:center;">
         <img src="gbr_qris.jpeg" alt="QRIS" class="qris-image" onerror="this.src='gbr_qris.jpg';">
         <div class="price-badge-box">
+          <div style="font-size:12px; color:var(--red); font-weight:bold; margin-bottom:4px;">⚠️ TRANSFER WAJIB SESUAI NOMINAL UNIK INI:</div>
           <div class="price-amount" id="finalPayAmount">Rp 7.000</div>
         </div>
-        <div class="info-payment">💡 <b>Langkah Terakhir:</b><br>Silakan scan & transfer. Jika sudah, klik tombol di bawah untuk langsung mengirim nota & nama berkas asli ke WA Admin!</div>
+        <div class="info-payment">💡 <b>PENTING:</b><br>Silakan transfer ke QRIS di atas. Sistem sedang memverifikasi pembayaran Anda otomatis dalam waktu singkat...</div>
         <div id="loadingUpload" class="loading-text">⏳ Memproses kiriman data ke cloud Render... Mohon tunggu jangan ditutup!</div>
         
-        <button class="btn-submit" id="btnSendWA" style="background:var(--green);">Kirim Orderan ke WhatsApp Admin 🚀</button>
+        <button class="btn-submit" id="btnSendWA" style="background:var(--green);" disabled>Mohon tunggu (15s)...</button>
       </div>
     </div>
 
@@ -111,14 +113,17 @@
   const pagesInput = document.getElementById('pages');
   const matchWordsInput = document.getElementById('matchWords');
   let selectedFile = null;
+  let kodeUnikGlobal = 0;
+  let hargaAsliGlobal = 7000;
 
   function hitungTarif() {
     let jmlLembar = parseInt(pagesInput.value) || 1;
     let baseHarga = 7000;
     if (jmlLembar > 200) baseHarga += 2000;
     else if (jmlLembar > 100) baseHarga += 1000;
+    
+    hargaAsliGlobal = baseHarga;
     document.getElementById('calculatedPrice').innerText = "Rp " + baseHarga.toLocaleString('id-ID');
-    document.getElementById('finalPayAmount').innerText = "Rp " + baseHarga.toLocaleString('id-ID');
   }
   pagesInput.addEventListener('input', hitungTarif);
 
@@ -154,14 +159,37 @@
   function handleFile(file) {
     selectedFile = file;
     fileNameDisplay.innerText = "📄 " + selectedFile.name;
-    console.log("File sukses terdeteksi sistem:", selectedFile.name);
   }
 
+  // DI SINI KITA GENERATE KODE UNIK KILAT & TIMERNYA
   document.getElementById('btnGoToPay').addEventListener('click', () => {
     if(!document.getElementById('whatsapp').value.trim()) { alert("Isi nomor WhatsApp dulu!"); return; }
     if(!selectedFile) { alert("Upload file berkas skripsi dulu, bos!"); return; }
+    
+    // Bikin angka acak 3 digit belakang (misal 11 s/d 199)
+    kodeUnikGlobal = Math.floor(Math.random() * 189) + 11;
+    let totalPlusUnik = hargaAsliGlobal + kodeUnikGlobal;
+    
+    document.getElementById('finalPayAmount').innerText = "Rp " + totalPlusUnik.toLocaleString('id-ID');
+    
     document.getElementById('screen-form').classList.remove('active');
     document.getElementById('screen-pay').classList.add('active');
+    
+    // Jalankan Timer Cepat 15 Detik Anti-Bypass
+    let batasanWaktu = 15;
+    const btnSendWA = document.getElementById('btnSendWA');
+    btnSendWA.disabled = true;
+    
+    const intervalTimer = setInterval(() => {
+      batasanWaktu--;
+      if(batasanWaktu > 0) {
+        btnSendWA.innerText = `Mohon tunggu (${batasanWaktu}s)...`;
+      } else {
+        clearInterval(intervalTimer);
+        btnSendWA.disabled = false;
+        btnSendWA.innerText = "Kirim Orderan ke WhatsApp Admin 🚀";
+      }
+    }, 1000);
   });
 
   document.getElementById('btnSendWA').addEventListener('click', async () => {
@@ -175,6 +203,7 @@
     formData.append('file', selectedFile);
     formData.append('whatsapp', document.getElementById('whatsapp').value.trim());
     formData.append('pages', pagesInput.value);
+    // Masukkan info nominal unik agar backend bisa membacanya
     formData.append('total_price', document.getElementById('finalPayAmount').innerText);
     formData.append('excludeBib', document.getElementById('excludeBib').checked ? "Aktif" : "Mati");
     formData.append('excludeQuotes', document.getElementById('excludeQuotes').checked ? "Aktif" : "Mati");
@@ -198,7 +227,7 @@
       }
     } catch (err) {
       loadingText.style.display = "none";
-      alert("Eror menyambung ke server Render backend! Pastikan server Render Anda aktif.");
+      alert("Eror menyambung ke server Render backend!");
       btn.disabled = false; btn.style.background = "var(--green)";
     }
   });
