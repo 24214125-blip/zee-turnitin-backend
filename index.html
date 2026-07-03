@@ -48,6 +48,7 @@
 <section class="hero">
   <div class="wrap">
     
+    <!-- HALAMAN UTAMA: ISI DATA & UPLOAD FILE -->
     <div id="screen-form" class="screen active hero-collage">
       <h1>Check Turnitin Manual ✨</h1>
       <p style="margin-bottom:20px;">Silakan isi formulir dan upload berkas skripsi/jurnal kamu.</p>
@@ -88,6 +89,7 @@
       </div>
     </div>
 
+    <!-- HALAMAN KEDUA: QRIS + TIMER KILAT ANTI-BYPASS -->
     <div id="screen-pay" class="screen hero-collage">
       <h1>Selesaikan Pembayaran 🌟</h1>
       <div class="main-form-card" style="text-align:center;">
@@ -116,6 +118,7 @@
   let kodeUnikGlobal = 0;
   let hargaAsliGlobal = 7000;
 
+  // Hitung Tarif Dasar Berdasarkan Halaman
   function hitungTarif() {
     let jmlLembar = parseInt(pagesInput.value) || 1;
     let baseHarga = 7000;
@@ -127,7 +130,7 @@
   }
   pagesInput.addEventListener('input', hitungTarif);
 
-  // KUNCI TOTAL AKSI BROWSER BIAR GAK BYPASS BUKA FILE BARU DI LAYAR
+  // Mencegah Browser Membuka File Sembarangan Saat Drag & Drop
   window.addEventListener("dragover", function(e) { e.preventDefault(); }, false);
   window.addEventListener("drop", function(e) { e.preventDefault(); }, false);
 
@@ -161,21 +164,33 @@
     fileNameDisplay.innerText = "📄 " + selectedFile.name;
   }
 
-  // DI SINI KITA GENERATE KODE UNIK KILAT & TIMERNYA
+  // =========================================================================
+  // LOGIKA UTAMA: KRIPTOGRAFI KODE UNIK DARI FILE + TIMER KILAT 15 DETIK
+  // =========================================================================
   document.getElementById('btnGoToPay').addEventListener('click', () => {
     if(!document.getElementById('whatsapp').value.trim()) { alert("Isi nomor WhatsApp dulu!"); return; }
     if(!selectedFile) { alert("Upload file berkas skripsi dulu, bos!"); return; }
     
-    // Bikin angka acak 3 digit belakang (misal 11 s/d 199)
-    kodeUnikGlobal = Math.floor(Math.random() * 189) + 11;
+    // 1. Ekstrak data unik spesifik dari file customer
+    let namaFileLength = selectedFile.name.length; // panjang nama file
+    let fileSizeBytes = selectedFile.size;        // ukuran byte berkas asli
+    let detikSekarang = new Date().getSeconds();   // waktu detik klik tombol
+    
+    // 2. Kalkulasikan rumus acak berbasis karakteristik file agar anti-kembar
+    let totalKombinasi = (namaFileLength * 7) + (fileSizeBytes % 1000) + (detikSekarang * 3);
+    
+    // 3. Batasi sisa bagi (modulus) agar angka unik berkisar antara 10 s/d 299
+    kodeUnikGlobal = (totalKombinasi % 290) + 10; 
+    
     let totalPlusUnik = hargaAsliGlobal + kodeUnikGlobal;
     
+    // Tampilkan nominal unik ke layar pembayaran QRIS
     document.getElementById('finalPayAmount').innerText = "Rp " + totalPlusUnik.toLocaleString('id-ID');
     
     document.getElementById('screen-form').classList.remove('active');
     document.getElementById('screen-pay').classList.add('active');
     
-    // Jalankan Timer Cepat 15 Detik Anti-Bypass
+    // Jalankan Kunci Timer Kilat 15 Detik biar customer fokus scan GoPay
     let batasanWaktu = 15;
     const btnSendWA = document.getElementById('btnSendWA');
     btnSendWA.disabled = true;
@@ -192,6 +207,7 @@
     }, 1000);
   });
 
+  // Eksekusi Kirim File ke Backend Render & Buka WhatsApp Otomatis
   document.getElementById('btnSendWA').addEventListener('click', async () => {
     const loadingText = document.getElementById('loadingUpload');
     const btn = document.getElementById('btnSendWA');
@@ -203,8 +219,7 @@
     formData.append('file', selectedFile);
     formData.append('whatsapp', document.getElementById('whatsapp').value.trim());
     formData.append('pages', pagesInput.value);
-    // Masukkan info nominal unik agar backend bisa membacanya
-    formData.append('total_price', document.getElementById('finalPayAmount').innerText);
+    formData.append('total_price', document.getElementById('finalPayAmount').innerText); // Nominal berkode unik dikirim ke backend
     formData.append('excludeBib', document.getElementById('excludeBib').checked ? "Aktif" : "Mati");
     formData.append('excludeQuotes', document.getElementById('excludeQuotes').checked ? "Aktif" : "Mati");
     formData.append('excludeCited', document.getElementById('excludeCited').checked ? "Aktif" : "Mati");
