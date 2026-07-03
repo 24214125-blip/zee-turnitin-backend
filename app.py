@@ -44,10 +44,11 @@ def process_file_order():
         file.seek(0) # Reset pointer file sebelum dikirim
         telegram_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
         caption_telegram = (
-            f"🔔 *BERKAS MASUK DARI WEB ZEE TURNITIN* 🔔\n\n"
+            f"🔔 *BERKAS MASUK DARI WEB ZEETURNITIN.ID* 🔔\n\n"
             f"📱 WA Customer: {wa_cust}\n"
             f"📄 Jumlah: {jml_lembar} Halaman\n"
-            f"💰 Status: LUNAS ({total_harga})"
+            f"💰 Nominal Tagihan Unik: {total_harga}\n"
+            f"⚠️ *Silakan pastikan dana masuk sesuai digit di atas sebelum diproses!*"
         )
         
         # Eksekusi kirim dokumen fisik asli ke Telegram
@@ -57,7 +58,7 @@ def process_file_order():
 
         # 2. FORMAT NOTA UNTUK DIBAWA CUSTOMER KE WHATSAPP LU
         template_chat = (
-            f"🛒 *ZEE TURNITIN — PESANAN MASUK* 🛒\n\n"
+            f"🛒 *ZEETURNITIN.ID — PESANAN MASUK* 🛒\n\n"
             f"📱 *Data Customer:*\n"
             f"   - No. WA Cust: {wa_cust}\n"
             f"   - Jumlah Lembar: {jml_lembar} Halaman\n\n"
@@ -68,9 +69,9 @@ def process_file_order():
             f"   - Exclude Quoted: {ex_quotes}\n"
             f"   - Exclude Cited: {ex_cited}\n"
             f"   - Exclude Small Matches: {m_words} Words\n\n"
-            f"💰 *Total Bayar:* *LUNAS ({total_harga})*\n\n"
+            f"💰 *Total Pembayaran:* *{total_harga}*\n\n"
             f"===============================\n"
-            f"Hai Admin Zee Turnitin, saya sudah transfer. File berkas asli sudah terunggah otomatis ke server. Mohon diproses ya, bos! 🙏✨"
+            f"Hai Admin ZeeTurnitin.id, saya sudah transfer via QRIS sebesar nominal unik di atas. Mohon dicek mutasi saldo masuknya ya, bos! 🙏✨"
         )
 
         teks_encoded = urllib.parse.quote(template_chat)
